@@ -248,6 +248,8 @@ namespace Content.Server.Atmos.EntitySystems
 
         private void OnTileFire(Entity<FlammableComponent> ent, ref TileFireEvent args)
         {
+            if (IsFireproof(ent)) return;
+
             var tempDelta = args.Temperature - ent.Comp.MinIgnitionTemperature;
 
             _fireEvents.TryGetValue(ent, out var maxTemp);
@@ -265,7 +267,7 @@ namespace Content.Server.Atmos.EntitySystems
         {
             // Only oxidize materials that would realistically react — organic, flammable items.
             // Metal structures, glass, etc. are not AlwaysCombustible and are spared.
-            if (!ent.Comp.AlwaysCombustible)
+            if (!ent.Comp.AlwaysCombustible || IsFireproof(ent))
                 return;
 
             // Damage scales with ClF3 concentration: more moles = faster destruction.
@@ -473,9 +475,7 @@ namespace Content.Server.Atmos.EntitySystems
                     continue;
                 }
 
-                bool fireproof = false;
-                if (HasComp<FireproofComponent>(uid) || InFireproofContainer(uid))
-                    fireproof = true;
+                bool fireproof = IsFireproof(uid);
 
                 if (!fireproof) _alertsSystem.ShowAlert(uid, flammable.FireAlert);
 
@@ -514,12 +514,15 @@ namespace Content.Server.Atmos.EntitySystems
             }
         }
 
-        public bool InFireproofContainer(EntityUid uid)
+        public bool IsFireproof(EntityUid uid)
         {
             var id = uid;
+            if (HasComp<FireproofComponent>(uid)) return true;
+
             int iterationCount = 0;
             while (iterationCount < 30) // Protects against turtles all the way down
             {
+                iterationCount++;
                 if (!_container.TryGetContainingContainer(id, out var container))
                     return false;
 
