@@ -49,6 +49,7 @@ public abstract partial class SharedFultonSystem : EntitySystem
         SubscribeLocalEvent<FultonComponent, AfterInteractEvent>(OnFultonInteract);
 
         SubscribeLocalEvent<FultonComponent, StackSplitEvent>(OnFultonSplit);
+        SubscribeLocalEvent<FultonBeaconComponent, FoldedEvent>(OnBeaconFolded);
     }
 
     private void OnFultonContainerInserted(EntityUid uid, FultonedComponent component, EntGotInsertedIntoContainerMessage args)
@@ -164,6 +165,13 @@ public abstract partial class SharedFultonSystem : EntitySystem
                 Broadcast = true,
                 NeedHand = true,
             });
+    }
+
+    private void OnBeaconFolded(EntityUid uid, FultonBeaconComponent component, FoldedEvent args)
+    {
+        if (args.User == null) // Only reset if a player folded the beacon. Prevents roundstart from resetting beacon link.
+            return;
+        component.Key = null;
     }
 
     private void OnFultonSplit(EntityUid uid, FultonComponent component, ref StackSplitEvent args)
