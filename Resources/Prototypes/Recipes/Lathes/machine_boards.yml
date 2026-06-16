@@ -580,3 +580,9 @@
   id: HolopadMachineCircuitboard
   result: HolopadMachineCircuitboard
   unlockUses: 4
+
+- type: latheRecipe
+  parent: [ BaseCircuitboardRecipe, BaseGeneralMachineRecipeCategory ]
+  id: HolopadLongRangeMachineCircuitboard
+  result: HolopadLongRangeMachineCircuitboard
+  unlockUses: 4
