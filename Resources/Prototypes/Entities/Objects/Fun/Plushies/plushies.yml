@@ -1194,8 +1194,8 @@
 - type: entity
   parent: BasePlushie
   id: PlushieVulp
-  name: vulpkanin plushie
-  description: An adorable stuffed toy that resembles a vulpkanin. Yip! Yap!
+  name: canidae plushie
+  description: An adorable stuffed toy that resembles a canidae. Yip! Yap!
   components:
   - type: Sprite
     sprite: Objects/Fun/Plushies/vulp.rsi
